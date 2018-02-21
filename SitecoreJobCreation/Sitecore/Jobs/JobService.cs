@@ -14,7 +14,7 @@ namespace SitecoreJobCreation.Sitecore.Jobs
 {
     public class JobService
     {              
-        private string _JobName = "Serialiaze";
+        private string _JobName = "SerialiazeAllItemsInBackground";
         public Job Job
         {            
             get { return JobManager.GetJob(_JobName); }
@@ -22,8 +22,8 @@ namespace SitecoreJobCreation.Sitecore.Jobs
         public string StartJob(Item root)
         {
                         
-            JobOptions options = new JobOptions(_JobName, "Serialiaze", Context.Site.Name,this,"SerilizeItems",new object[] { root});
-            JobManager.Start(options);
+            JobOptions options = new JobOptions(_JobName, "Serialiaze", Context.Site.Name,this,"SerilizeItems",new object[] { root });
+            JobManager.Start(options);           
             return _JobName;
         }
         public void SerilizeItems(Item root)
@@ -31,8 +31,9 @@ namespace SitecoreJobCreation.Sitecore.Jobs
             ProcessAllItems(root);
             if(Job !=null  )
             {
-                Job.Status.State = JobState.Finished;
+                Job.Status.State = JobState.Finished;                
             }
+            
         }
         private void ProcessAllItems(Item item)
         {

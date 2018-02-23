@@ -12,13 +12,15 @@ using Sitecore.Jobs;
 
 namespace SitecoreJobCreation.Sitecore.Commands
 {
-    public class SerializeAllItems : Command
+    public class SerializationJob : Command
     {
-        private string _JobName = "SerialiazeAllItemsInBackground";
-        private bool JobIsRunningOrQueued = false;
+
+        string _JobName = Constants._JobName;
         public override void Execute(CommandContext context)
         {
-            if(JobIsRunningOrQueued==false)
+            
+
+            if (JobNotRunningOrQueued(_JobName))
             {
                 Item contextItem = context.Items[0];
                 if (contextItem != null)
@@ -27,11 +29,12 @@ namespace SitecoreJobCreation.Sitecore.Commands
                     JobService service = new JobService();
                     service.StartJob(contextItem);
                 }
-                sc.Context.ClientPage.ClientResponse.Alert("Job completed!...");
+                if (IsJobFinished(_JobName))
+                    sc.Context.ClientPage.ClientResponse.Alert("Job completed!...");
             }
             else
             {
-               sc.Context.ClientPage.ClientResponse.Confirm("Job with this name is already running or queued!..");
+                sc.Context.ClientPage.ClientResponse.Confirm("Job with this name is already running or queued!..");
             }
 
         }
@@ -39,17 +42,28 @@ namespace SitecoreJobCreation.Sitecore.Commands
         public override CommandState QueryState(CommandContext context)
         {
             Item contextItem = context.Items[0];
-            return (contextItem.Children.Count > 0) ? CommandState.Enabled : CommandState.Disabled;           
+            return (contextItem.Children.Count > 0) ? CommandState.Enabled : CommandState.Disabled;
         }
 
-        private void JobNotRunning()
+        private bool JobNotRunningOrQueued(string JobName)
         {
-            Job job = JobManager.GetJob(_JobName);
+            Job job = JobManager.GetJob(JobName);
             if (job != null)
             {
-                Item item = job.Options.Item;
-                JobIsRunningOrQueued =  job.Status.State == JobState.Running || job.Status.State == JobState.Queued ? true : false;
-            }            
+                // Item item = job.Options.Item;
+                return (job.Status.State == JobState.Finished) ? true : false;
+                
+            }
+            return true;
+        }
+        private bool IsJobFinished(string JobName)
+        {
+            Job job = JobManager.GetJob(JobName);
+            if(job!=null)
+            {
+                return job.Status.State == JobState.Finished;
+            }
+            return false;
         }
     }
 }

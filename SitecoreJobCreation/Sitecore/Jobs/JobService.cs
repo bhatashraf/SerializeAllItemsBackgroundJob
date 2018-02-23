@@ -13,8 +13,8 @@ using Sitecore.Diagnostics;
 namespace SitecoreJobCreation.Sitecore.Jobs
 {
     public class JobService
-    {              
-        private string _JobName = "SerialiazeAllItemsInBackground";
+    {
+        private string _JobName = Constants._JobName;
         public Job Job
         {            
             get { return JobManager.GetJob(_JobName); }
@@ -31,7 +31,8 @@ namespace SitecoreJobCreation.Sitecore.Jobs
             ProcessAllItems(root);
             if(Job !=null  )
             {
-                Job.Status.State = JobState.Finished;                
+                Job.Status.State = JobState.Finished;
+                Job.Status.Expiry = DateTime.Now.AddMinutes(-1.0);     
             }
             
         }
@@ -47,9 +48,6 @@ namespace SitecoreJobCreation.Sitecore.Jobs
         {
             if(Job !=null)
             {
-               //Job.Status.Processed++;
-               // Job.Status.State = JobState.Running;
-
                 if (item.Locking.IsLocked())
                 {
                     sc.Data.Serialization.Manager.DumpItem(item);

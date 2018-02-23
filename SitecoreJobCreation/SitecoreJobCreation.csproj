@@ -126,6 +126,8 @@
     <None Include="lib\Sitecore.Kernel.dll" />
     <Content Include="scripts\ai.0.22.9-build00167.js" />
     <Content Include="scripts\ai.0.22.9-build00167.min.js" />
+    <Content Include="Sitecore\admin\JobPage.aspx" />
+    <Content Include="Sitecore\admin\Jobs.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -134,9 +136,20 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Job\JobModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sitecore\Commands\SerializeAllItems.cs" />
+    <Compile Include="Sitecore\admin\JobPage.aspx.cs">
+      <DependentUpon>JobPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sitecore\admin\JobPage.aspx.designer.cs">
+      <DependentUpon>JobPage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sitecore\Commands\SerializationJob.cs" />
+    <Compile Include="Sitecore\Commands\TerminateSerializationJob.cs" />
+    <Compile Include="Sitecore\Jobs\Constants.cs" />
     <Compile Include="Sitecore\Jobs\JobService.cs" />
+    <Compile Include="Sitecore\Jobs\TerminateJobService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -155,7 +168,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
